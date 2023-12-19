@@ -11,33 +11,32 @@ class Skill {
 
   get_Master(num) {
     return this.master ? this.parent[this.master[num]] != undefined ? this.parent[this.master[num]] : 
-      console.log(` Index ${num} master data missing`) : console.log(' Skill does not have master')  
+      console.log(`|| Index ${num} master data missing ||`) : console.log('|| Skill does not have master ||')  
   }
 
   get_Child(num) {
     return this.child ? this.parent[this.child[num]] != undefined ? this.parent[this.child[num]] : 
-      console.log(` Index ${num} child data missing`) : console.log(' Skill does not have children')
+      console.log(`|| Index ${num} child data missing ||`) : console.log('|| Skill does not have children ||')
   }
 
   print_Masters() {
     Utils.div()
-    
     if(this.master) {
-      console.log(' Mestres:')
+      console.log('|| Mestres ||')
       Object.entries(this.master).forEach((i) => {
         console.log(i[1])
       })
-    } else console.log(' Skill lacking master')
+    } else console.log('|| Skill lacking master ||')
   }
 
   print_Children() {
     Utils.div()
     if(this.child) {
-      console.log(' Children:')
+      console.log('|| Children ||')
       Object.entries(this.child).forEach((i) => {
         console.log(i[1])
       })
-    } else console.log(' Skill lacking children')
+    } else console.log('|| Skill lacking children ||')
   }
 
   master_Masters() {
@@ -67,46 +66,45 @@ class ActiveSkill extends Skill {
     Utils.div()
     console.log(`Rolagem de ${this.name}`)
     console.log(`Nível: ${this.level}\n`)
-    this.atr[1] == undefined ? console.log(' Atributo:') : console.log(' Atributos:')
+    this.atr[1] == undefined ? console.log('|| Atributo ||') : console.log('|| Atributos ||')
 
     Object.entries(this.atr).forEach((i) => {
       let atrName = 'teste'
       switch(i[1]){
         case 'agil': atrName = 'Agilidade'
           break;
-        case 'con': atr_name = 'Constituição'
+        case 'con': atrName = 'Constituição'
           break;
-        case 'des': atr_name = 'Destreza'
+        case 'des': atrName = 'Destreza'
           break;
-        case 'for': atr_name = 'Força'
+        case 'for': atrName = 'Força'
           break;
-        case 'adap': atr_name = 'Adaptabilidade'
+        case 'adap': atrName = 'Adaptabilidade'
           break;
-        case 'int': atr_name = 'Intelecto'
+        case 'int': atrName = 'Intelecto'
           break;
-        case 'vont': atr_name = 'Vontade'
+        case 'vont': atrName = 'Vontade'
           break;
-        case 'sent': atr_name = 'Sentidos'
+        case 'sent': atrName = 'Sentidos'
           break;
-        case 'alma': atr_name = 'Alma'
+        case 'alma': atrName = 'Alma'
           break;
-        case 'sor': atr_name = 'Sorte'
+        case 'sor': atrName = 'Sorte'
       }  
-      console.log(`${atrName}: ${Utils.fixDec(this.parent.parent[i[1]] * this.ratio[i[0]]/100)} (${Utils.fixDec(this.parent.parent[i[1]])}) [${this.ratio[i[0]]}%]`)
+      console.log(`${atrName}: ${Utils.fixDec(this.parent.parent[i[1]] * this.ratio[i[0]]/100)} ${Utils.fixDec(this.parent.parent[i[1]])}) [${this.ratio[i[0]]}%]`)
     })
 
     const effAtr = this._Eff_Atr()
-    console.log(`\n Atributo Efetivo: ${Utils.fixDec(effAtr)}`)
+    console.log(`\n|| Atributo Efetivo: ${Utils.fixDec(effAtr)} ||`)
 
-    if (random == false)
-    {
+    if (random == false) {
       for (let i = 2; i <= 8; i++) {
-        const teste = ((3*eff_atr/6+3)**(1+this.level/100*6))*(0.5+0.125*(i-1))
+        const teste = ((3*effAtr/6+3)**(1+this.level/100*6))*(0.5+0.125*(i-1))
         console.log(`${i}: ${Utils.fixDec(teste)}`)
       }   
     } else {
       const roll = Math.floor(Math.random()*4)+1+Math.floor(Math.random()*4)+1
-      console.log(`${roll}: ${Utils.fixDec(((3*eff_atr/6+3)**(1+this.level/100*6))*(0.5+0.125*(roll-1)))}`)
+      console.log(`${roll}: ${Utils.fixDec(((3*effAtr/6+3)**(1+this.level/100*6))*(0.5+0.125*(roll-1)))}`)
     }
   }
 

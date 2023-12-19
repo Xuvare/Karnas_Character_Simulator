@@ -1,6 +1,7 @@
-import Utils from '../Utils.js' // time, div(), fixDec()
+import Utils from '../Utils.js' // time, div(), fixDec(), lower(), upper()
 import Res from './Resources.js'
 
+//Structure
 class Skill {
   constructor(name, level, master, child) {
     this.name = name
@@ -22,9 +23,9 @@ class Skill {
   print_Masters() {
     Utils.div()
     if(this.master) {
-      console.log('|| Mestres ||')
+      console.log('|| Mestres ||\n')
       Object.entries(this.master).forEach((i) => {
-        console.log(i[1])
+        console.log(this.parent[i[1]].name)
       })
     } else console.log('|| Skill lacking master ||')
   }
@@ -32,9 +33,9 @@ class Skill {
   print_Children() {
     Utils.div()
     if(this.child) {
-      console.log('|| Children ||')
+      console.log('|| Children ||\n')
       Object.entries(this.child).forEach((i) => {
-        console.log(i[1])
+        console.log(this.parent[i[1]].name)
       })
     } else console.log('|| Skill lacking children ||')
   }
@@ -42,9 +43,9 @@ class Skill {
   master_Masters() {
     return 0
   }
-}
+} // skill class, não confundir com objeto skills em character (character.skills.skill)
 
-class ActiveSkill extends Skill {
+class Active extends Skill {
   constructor(name, level, resource, cost, duration , atr, master = false, child = false, ratio = [100] ){
     super(name, level, master, child)
     this.atr = atr
@@ -60,6 +61,10 @@ class ActiveSkill extends Skill {
       effAtr += this.parent.parent[i[1]] * this.ratio[i[0]]/100
     })
     return effAtr
+  }
+
+  _eff_Skill_Level() {
+    
   }
 
   roll(random = false) {
@@ -91,10 +96,10 @@ class ActiveSkill extends Skill {
           break;
         case 'sor': atrName = 'Sorte'
       }  
-      console.log(`${atrName}: ${Utils.fixDec(this.parent.parent[i[1]] * this.ratio[i[0]]/100)} ${Utils.fixDec(this.parent.parent[i[1]])}) [${this.ratio[i[0]]}%]`)
+      console.log(`${atrName}: ${Utils.fixDec(this.parent.parent[i[1]] * this.ratio[i[0]]/100)} (${Utils.fixDec(this.parent.parent[i[1]])}) [${this.ratio[i[0]]}%]`)
     })
 
-    const effAtr = this._Eff_Atr()
+    const effAtr = this._eff_Atr()
     console.log(`\n|| Atributo Efetivo: ${Utils.fixDec(effAtr)} ||`)
 
     if (random == false) {
@@ -103,8 +108,9 @@ class ActiveSkill extends Skill {
         console.log(`${i}: ${Utils.fixDec(teste)}`)
       }   
     } else {
-      const roll = Math.floor(Math.random()*4)+1+Math.floor(Math.random()*4)+1
-      console.log(`${roll}: ${Utils.fixDec(((3*effAtr/6+3)**(1+this.level/100*6))*(0.5+0.125*(roll-1)))}`)
+      const x = Math.floor(Math.random()*4)+1
+      const y = Math.floor(Math.random()*4)+1
+      console.log(`${x+y}(${x}+${y}): ${Utils.fixDec(((3*effAtr/6+3)**(1+this.level/100*6))*(0.5+0.125*(x+y)))}`)
     }
   }
 
@@ -112,15 +118,126 @@ class ActiveSkill extends Skill {
     Utils.div()
     console.log(`${this.parent.parent.name} usou ${this.name}`)
     this.parent.parent[this.resource].desgaste = this.cost * tempo / this.duration
-    this.Roll(true)
+    this.roll(true)
     Utils.time.segundos += tempo
   }
 }
 
-class PassiveSkill extends Skill {
+class Passive extends Skill {
   constructor(name, level, master = false, child = false){
     super(name, level, master, child)
   }
 }
 
-export {ActiveSkill, PassiveSkill}
+// Database
+
+// Mestre: Lâmina
+export class Espada extends Passive { 
+  constructor(level, generic = '') {
+    let m = ['']
+    if(generic == '') {
+      m[0] = 'espada'
+      m[1] = 'Espada'
+      m[2] = 'lâmina'
+      m[3] = false
+    } else {
+      m[0] = `${Utils.lower(generic)}`
+      m[1] = `${Utils.upper(generic)}`
+      m[2] = 'espada'
+      m[3] = [`precisão_${Utils.lower(generic)}_bisel`, `precisão_${Utils.lower(generic)}_ponta`]
+    }
+
+    super(`${m[1]}`, level, m[2], m[3])
+    this.key = `${m[0]}`
+  }
+} // Generic
+export class Lâmina extends Passive {
+  constructor(level) {
+    super('Lâmina', level, false, ['espada'])
+    this.key = 'lâmina'
+  }
+}
+
+// Mestre: Precisão
+export class Precisão_Alavanca extends Active { 
+  constructor(level) {
+    super('Precisão: Alavanca', level, 'sp', 0.5, 0.5, ['des'] , false, ['precisão_concussão'])
+    this.key = 'precisão_alavanca'
+  }
+}
+export class Precisão_Estocada extends Active { 
+  constructor(level) {
+    super('Precisão: Estocada', level, 'sp', 0.5, 0.5, ['des'] , false, ['precisão_perfuração'])
+    this.key = 'precisão_estocada'
+  }
+}
+export class Precisão_Concussão extends Passive { 
+  constructor(level) {
+    super('Precisão: Concussão', level , ['precisão_alavanca'], false)
+    this.key = 'precisão_concussão'
+  }
+}
+export class Precisão_Perfuração extends Passive { 
+  constructor(level) {
+    super('Precisão: Perfuração', level , ['precisão_estocada'], false)
+    this.key = 'precisão_perfuração'
+  }
+}
+
+// Skills Mistas
+// tive que blasfemar os nomes pois ficavam ilegiveis caso não
+export class Precisão_Broadsword_Ponta extends Active {
+  constructor(level) {
+    super('Precisão Broadsword: Ponta', level, 'sp', 0.5, 0.5, ['des'], ['broadsword', 'precisão_ponta'], false)
+    this.key = 'precisão_broadsword_ponta'
+  }
+}
+export class Precisão_Corte extends Passive { 
+  constructor(level) {
+    super('Precisão: Corte', level , ['lâmina', 'precisão_alavanca'], ['precisão_ponta', 'precisão_bisel'])
+    this.key = 'precisão_corte'
+  }
+}
+export class Precisão_Bisel extends Active { 
+  constructor(level, generic = '') {
+    let m = ['']
+    if(generic == '') {
+      m[0] = ''
+      m[1] = ''
+      m[2] = 'precisão_corte'
+    } else {
+      m[0] = `_${Utils.lower(generic)}`
+      m[1] = ` ${Utils.upper(generic)}`
+      m[2] = [`precisão_bisel`, Utils.lower(generic)]
+    }
+    
+    super(`Precisão${m[1]}: Bisel`, level, 'sp', 0.5, 0.5, ['des'] , m[2], false)
+    this.key = `precisão${m[0]}_bisel`
+  }
+} // Generic
+export class Precisão_Corte_Ponta extends Active { 
+  constructor(level, generic = '') {
+    let m = ['']
+    if(generic == '') {
+      m[0] = ''
+      m[1] = ''
+      m[2] = 'precisão_corte'
+    } else {
+      m[0] = `_${Utils.lower(generic)}`
+      m[1] = ` ${Utils.upper(generic)}`
+      m[2] = [`precisão_corte_ponta`, Utils.lower(generic)]
+    }
+
+    super(`Precisão Corte${m[1]}: Ponta`, level, 'sp', 0.5, 0.5, ['des'] , m[2], false)
+    this.key = `precisão_corte${m[0]}_ponta`
+  }
+} // Generic
+
+/* 
+Lâmina 3
+Espada 4, Precisão: Alavanca 2
+Broadsword 6, Precisão Corte 3
+Precisão: Bisel 5
+Precisão Broadsword: Bisel 6
+
+*/

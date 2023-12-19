@@ -1,14 +1,39 @@
+import Utils from '../Utils.js' // time, div(), fixDec(), lower(), upper()
 import Res from './Resources.js'
+import * as Skill from './Skills.js'
 
 class Char {
 	constructor(name, sp, fp, ap, atr) {     
 		this.name = name
 		this.skills = {
-			update() {
-				let skip = 2
-				Object.entries(this).forEach((i) => {skip ? skip-- : this[i[0]].parent = this})
-			}
-		}
+      add(name, level = 0) {
+        name = Utils.upper(name)
+        let temp = new Skill[name](level)
+        this[temp.key] = temp
+        this[temp.key].parent = this
+      }, // adiciona skill
+      add_Generic(generic, name, level = 0) {
+        name = Utils.upper(name)
+        let temp = new Skill[name](level, generic)
+        this[temp.key] = temp
+        this[temp.key].parent = this
+        let temp2 = new Skill[name](level)
+        
+        if(!this[temp.key].parent[temp2.key].child) {
+          this[temp.key].parent[temp2.key].child = []
+        } // If child = false converte em objeto
+        this[temp.key].parent[temp2.key].child.push(this[temp.key].key) // Adiciona skill genérica como child da skill mestra
+      }, // adiciona skill genérica
+      list(){
+        Utils.div()
+        console.log(`|| ${this.parent.name}'s Skill List ||\n`)
+        let skip = 4
+        Object.entries(this).forEach((i) => { 
+          skip ? skip-- : 
+            console.log(`${this[i[0]].name} ${this[i[0]].level}`)
+        })
+      }
+    }
 		this.skills.parent = this
 
 		// attributes

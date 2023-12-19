@@ -64,6 +64,12 @@ var Obj = {
       }
 
       return num
+  },
+  lower: (str) => {
+    return str[0].toLowerCase() + str.slice(1)
+  },
+  upper: (str) => {
+    return str[0].toUpperCase() + str.slice(1)
   }
 }
 

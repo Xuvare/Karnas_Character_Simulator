@@ -1,0 +1,30 @@
+/*
+  // JS enum named SkillNames
+  const SkillNames = {
+    broadsword: 'broadsword',
+    florete: 'florete',
+    spear: 'spear',
+    dagger: 'dagger'
+  };
+
+  // Example of a switch implementing the enum
+  let skill = SkillNames.broadsword;
+
+  switch (skill) {
+    case SkillNames.broadsword:
+      console.log('Using broadsword skill');
+      break;
+    case SkillNames.florete:
+      console.log('Using florete skill');
+      break;
+    case SkillNames.spear:
+      console.log('Using spear skill');
+      break;
+    case SkillNames.dagger:
+      console.log('Using dagger skill');
+      break;
+    default:
+      console.log('Unknown skill');
+      break;
+  }
+*/

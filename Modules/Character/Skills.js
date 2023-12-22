@@ -186,12 +186,6 @@ export class Precisão_Perfuração extends Passive {
 
 // Skills Mistas
 // tive que blasfemar os nomes pois ficavam ilegiveis caso não
-export class Precisão_Broadsword_Ponta extends Active {
-  constructor(level) {
-    super('Precisão Broadsword: Ponta', level, 'sp', 0.5, 0.5, ['des'], ['broadsword', 'precisão_ponta'], false)
-    this.key = 'precisão_broadsword_ponta'
-  }
-}
 export class Precisão_Corte extends Passive { 
   constructor(level) {
     super('Precisão: Corte', level , ['lâmina', 'precisão_alavanca'], ['precisão_ponta', 'precisão_bisel'])

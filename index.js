@@ -33,34 +33,78 @@ shiro.skills.add_Generic('Florete', 'Precisão_Corte_Ponta', 3)
 
 shiro.skills.list()
 */
+const atr = {
+  last: 0,
+  atual: 18,
+  base: 18,
+  mod: 1.45,
+  debuff: 0,
 
-let last = 0
+  decay(rotina, tempo) { // protótipo para decay de força
+    const bioBase = this.base/4
+    let temp = 0
+    let rest = false
 
-const decay = (base, atual, rotina, tempo, nutrição) => { // protótipo para decay de força
-  const bioBase = base/4
-  let temp = 0
-  const mod = nutrição
-  
-  for (var i = 0; i < tempo; i++) {
-    Utils.div()
-    console.log(`Dia ${i+1}`)
-    let a = [rotina/2*mod+bioBase*2, atual]
-    let per = (a[0]-a[1])*2/7 // porcentagem que será alterada do atributo
-    
-  /*console.log(a[0], a[1])
-    console.log(a[0]-a[1]) */
-    if(per > 37/350) per = 37/350
-    console.log(`${per}%`)
-    atual += base*(per/100)
-    console.log(atual)
-    
-    last = per
-    temp += per
+    for (var i = 0; i < tempo; i++) {
+
+      let per = 0 // porcentagem que será alterada do atributo
+      rotina < this.atual && this.debuff ? rest = true : rest = false
+      
+      // se estava se exercitou e no dia anterior também, aumenta debuff
+      if(rotina >= this.atual && this.last && this.debuff < 0.5)  {
+        this.debuff += 0.05
+        console.log('debuff up')
+      } else {
+        if(rotina < this.atual && this.debuff > 0.15) {
+          this.debuff -= 0.1
+          console.log('debuff down')
+        } else if (rotina < this.atual) {
+          this.debuff = 0
+          console.log('debuff zero')
+        }
+      }
+
+      let a = [rotina/2*(this.mod-this.debuff)+bioBase*2, this.atual] // afeta cap
+      
+      per = (a[0]-a[1])*0.5/7 // afeta velocidade de alteração
+      
+      if(rest) {
+        this.last *= 0.9
+        per = this.last*0.5/7
+        console.log('rest')
+      } // afeta cap
+
+      console.log(`${per}%`)
+      this.atual += this.base*(per/100)
+      console.log(this.atual)
+
+      this.last = per
+      temp += per
+    }
+    /* Utils.div()
+    console.log(`Ganho de atributo total: ${temp}%`) */
+  },
+
+  day_In_Day_Out(dias) {
+    let par = false
+
+    for (var i = 1; i <= dias; i++)
+    {
+      if(par){
+        Utils.div()
+        console.log(`Dia ${i}`)
+        this.decay(18, 1)
+        par = false
+      } else {
+        Utils.div()
+        console.log(`Dia ${i}`)
+        this.decay(this.atual+3 , 1)
+        par = true
+      }
+    }
   }
-  Utils.div()
-  console.log(`Ganho de atributo total: ${temp}%`)
 }
 
-decay(18, 36, 39, 1, 1.4)
+atr.day_In_Day_Out(365*4)
 
 Utils.div()

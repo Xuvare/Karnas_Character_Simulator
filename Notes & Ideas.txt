@@ -28,3 +28,8 @@
       break;
   }
 */
+
+
+
+
+atr = [[0,"atriibuto"],[1,"atriibuto"],[2,"atriibuto"]]

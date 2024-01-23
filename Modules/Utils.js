@@ -3,7 +3,7 @@ var Obj = {
         _segundos: 0,
         _minutos: 0,
         _horas: 0,
-        dias: 1,
+        dias: 0,
 
         get segundos() {return this._segundos},
         set segundos(val) {
@@ -45,14 +45,11 @@ var Obj = {
         console.log('-----------------------------------------------------------------------------------')
     },
   fixDec: (num) => {
-      if (typeof num != 'string')
-      {
+      if (typeof num != 'string') {
           num = num.toFixed(3)
-          num = num.toString()
       }  
 
-      if(num.includes('.'))
-      {
+      if(num.includes('.')) {
           while (num[num.length-1] == 0)
           {
               num = num.substring(0, num.length-1)
@@ -70,7 +67,7 @@ var Obj = {
   },
   upper: (str) => {
     return str[0].toUpperCase() + str.slice(1)
-  }
+  },
 }
 
 export {Obj as default}

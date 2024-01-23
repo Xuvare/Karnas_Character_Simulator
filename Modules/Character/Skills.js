@@ -58,7 +58,7 @@ class Active extends Skill {
   _eff_Atr() {
     let effAtr = 0
     Object.entries(this.atr).forEach((i) => {
-      effAtr += this.parent.parent[i[1]] * this.ratio[i[0]]/100
+      effAtr += this.parent.parent.atr[i[1]].atual * this.ratio[i[0]]/100
     })
     return effAtr
   }
@@ -74,29 +74,10 @@ class Active extends Skill {
     this.atr[1] == undefined ? console.log('|| Atributo ||') : console.log('|| Atributos ||')
 
     Object.entries(this.atr).forEach((i) => {
-      let atrName = 'teste'
-      switch(i[1]){
-        case 'agil': atrName = 'Agilidade'
-          break;
-        case 'con': atrName = 'Constituição'
-          break;
-        case 'des': atrName = 'Destreza'
-          break;
-        case 'for': atrName = 'Força'
-          break;
-        case 'adap': atrName = 'Adaptabilidade'
-          break;
-        case 'int': atrName = 'Intelecto'
-          break;
-        case 'vont': atrName = 'Vontade'
-          break;
-        case 'sent': atrName = 'Sentidos'
-          break;
-        case 'alma': atrName = 'Alma'
-          break;
-        case 'sor': atrName = 'Sorte'
-      }  
-      console.log(`${atrName}: ${Utils.fixDec(this.parent.parent[i[1]] * this.ratio[i[0]]/100)} (${Utils.fixDec(this.parent.parent[i[1]])}) [${this.ratio[i[0]]}%]`)
+      const atrName = this.parent.parent.atr[i[1]].name
+      const atrAtual = this.parent.parent.atr[i[1]].atual
+      
+      console.log(`${atrName}: ${Utils.fixDec(atrAtual * this.ratio[i[0]]/100)} (${Utils.fixDec(atrAtual)}) [${this.ratio[i[0]]}%]`)
     })
 
     const effAtr = this._eff_Atr()
